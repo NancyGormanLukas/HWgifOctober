@@ -5,7 +5,6 @@ $(function() {
 
 var searchArray = ["Thanksgiving", "Easter", "Halloween", "Christmas", "Purim", "Passover", "Eid", "Kwanzaa", "Diwali"];
 
-//function to make buttons and add to page
 function populateButtons(searchArray, classToAdd, areaToAddTo){
     $(areaToAddTo).empty();
 
@@ -14,15 +13,11 @@ function populateButtons(searchArray, classToAdd, areaToAddTo){
         a.addClass(classToAdd);
         a.attr('data-type', searchArray[i]);
         a.text(searchArray[i]);
-        $(areaToAddTo).append(a);
-    }
-
-}
+        $(areaToAddTo).prepend(a);
+    };
+};
 
 $(document).on('click', '.searchButton', function(){
-    $('#animals').empty();
-    $('.animalButton').removeClass('active');
-    $(this).addClass('active');
 
     var type = $(this).data('type');
     var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + type + "&api_key=dc6zaTOxFJmzC&limit=10";
@@ -32,47 +27,39 @@ $(document).on('click', '.searchButton', function(){
 
          for(var i=0; i < response.data.length; i++){
              var searchDiv = $('<div class="search-item">')
-
              var rating = response.data[i].rating;
-
              var p = $('<p>').text( "Rating: " + rating);
 
              var animated = response.data[i].images.fixed_height.url;
              var still = response.data[i].images.fixed_height_still.url;
-
              var image = $('<img>');
+
              image.attr('src', still);
              image.attr('data-still', still);
-             image.attr('data-animate', animated);
+             image.attr('data-animated', animated);
              image.attr('data-state', 'still');
              image.addClass('searchImage');
-
-             searchDiv.append(p);
-             searchDiv.append(image);
-
-             $('#searches').append(searchDiv);
+             searchDiv.prepend(p);
+             searchDiv.prepend(image);
+             $('#searches').prepend(searchDiv);
          }
-        
     }); 
 });
-
-$(document).on('click', '.animalImage', function(){
-    var state = $(this).attr('data-state'); //.data('state') won't work the way we expect
-    
-    if ( state == 'still'){
-        $(this).attr('src', $(this).data('animate'));
-        $(this).attr('data-state', 'animate');
-    }else{
+$(document).on('click', '.searchImage', function(){
+    var state= $(this).data('state');
+    if (state == 'still'){
+        $(this).attr('src', $(this).data('animated'));
+        $(this).attr('data-state', 'animated');
+    } else {
         $(this).attr('src', $(this).data('still'));
         $(this).attr('data-state', 'still');
     }
-})
+});
 
 $('#addSearch').on('click', function(){
     var newSearch = $('input').eq(0).val();
     searchArray.push(newSearch);
-
-    populateButtons(animals, 'animalButton', '#animalButtons');
+    populateButtons (searchArray, 'searchButton', '#buttonsArea');
 
     return false;
 });
