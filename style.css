@@ -2,10 +2,10 @@ body {
     font: 18px arial, sans-serif;
     background: #eee;
 }
-#animals {
+#buttonsArea {
     width: 70%;
 }
-.animal-item {
+.search-item {
     float: left;
     padding: 10px;
 }

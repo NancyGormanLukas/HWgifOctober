@@ -1,9 +1,9 @@
 $(function() {
     //do on page load
     populateButtons(searchArray, 'searchButton', '#buttonsArea');
-});
+})
 
-var searchArray = ["Thanksgiving", "Easter", "Halloween", "Christmas", "Purim", "Passover", "Eid", "Kwanzaa", "Diwali"];
+var searchArray = ["Thanksgiving", "Halloween", "Christmas", "Purim", "Passover", "Eid", "Kwanzaa", "Diwali"];
 
 function populateButtons(searchArray, classToAdd, areaToAddTo){
     $(areaToAddTo).empty();
@@ -14,39 +14,36 @@ function populateButtons(searchArray, classToAdd, areaToAddTo){
         a.attr('data-type', searchArray[i]);
         a.text(searchArray[i]);
         $(areaToAddTo).prepend(a);
-    };
-};
+    }
+}
 
 $(document).on('click', '.searchButton', function(){
-
     var type = $(this).data('type');
     var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + type + "&api_key=dc6zaTOxFJmzC&limit=10";
 
     $.ajax({url: queryURL, method: 'GET'})
      .done(function(response) {
-
          for(var i=0; i < response.data.length; i++){
-             var searchDiv = $('<div class="search-item">')
+             var searchDiv = $('<div class="search-item">');
              var rating = response.data[i].rating;
-             var p = $('<p>').text( "Rating: " + rating);
-
+             var p = $('<p>').text("Rating: " + rating);
              var animated = response.data[i].images.fixed_height.url;
              var still = response.data[i].images.fixed_height_still.url;
              var image = $('<img>');
 
-             image.attr('src', still);
-             image.attr('data-still', still);
-             image.attr('data-animated', animated);
-             image.attr('data-state', 'still');
+             image.attr('src',still);
+             image.attr('data-still',still);
+             image.attr('data-animated',animated);
+             image.attr('data-state','still');
              image.addClass('searchImage');
              searchDiv.prepend(p);
              searchDiv.prepend(image);
              $('#searches').prepend(searchDiv);
          }
-    }); 
-});
+    })
+})
 $(document).on('click', '.searchImage', function(){
-    var state= $(this).data('state');
+    var state= $(this).attr('data-state');
     if (state == 'still'){
         $(this).attr('src', $(this).data('animated'));
         $(this).attr('data-state', 'animated');
@@ -54,12 +51,11 @@ $(document).on('click', '.searchImage', function(){
         $(this).attr('src', $(this).data('still'));
         $(this).attr('data-state', 'still');
     }
-});
+})
 
-$('#addSearch').on('click', function(){
+$('#addSearch').on('click',function(){
     var newSearch = $('input').eq(0).val();
     searchArray.push(newSearch);
-    populateButtons (searchArray, 'searchButton', '#buttonsArea');
-
+    populateButtons(searchArray, 'searchButton','#buttonsArea');
     return false;
 });
